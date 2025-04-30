@@ -44701,12 +44701,33 @@ Cogs.define("react-list.js", (module, exports, require, __import) => {
         return [first, last];
       }
     }, {
+      key: "getListStyle",
+      value: function getListStyle(x, y) {
+        var _this$props6 = this.props,
+          useTranslate3d = _this$props6.useTranslate3d,
+          usePosition = _this$props6.usePosition;
+        if (usePosition) {
+          return {
+            position: 'relative',
+            top: y,
+            left: x
+          };
+        } else {
+          var transform = useTranslate3d ? "translate3d(".concat(x, "px, ").concat(y, "px, 0)") : "translate(".concat(x, "px, ").concat(y, "px)");
+          return {
+            msTransform: transform,
+            WebkitTransform: transform,
+            transform: transform
+          };
+        }
+      }
+    }, {
       key: "renderItems",
       value: function renderItems() {
         var _this3 = this;
-        var _this$props6 = this.props,
-          itemRenderer = _this$props6.itemRenderer,
-          itemsRenderer = _this$props6.itemsRenderer;
+        var _this$props7 = this.props,
+          itemRenderer = _this$props7.itemRenderer,
+          itemsRenderer = _this$props7.itemsRenderer;
         var _this$state5 = this.state,
           from = _this$state5.from,
           size = _this$state5.size;
@@ -44720,11 +44741,10 @@ Cogs.define("react-list.js", (module, exports, require, __import) => {
       key: "render",
       value: function render() {
         var _this4 = this;
-        var _this$props7 = this.props,
-          axis = _this$props7.axis,
-          length = _this$props7.length,
-          type = _this$props7.type,
-          useTranslate3d = _this$props7.useTranslate3d;
+        var _this$props8 = this.props,
+          axis = _this$props8.axis,
+          length = _this$props8.length,
+          type = _this$props8.type;
         var _this$state6 = this.state,
           from = _this$state6.from,
           itemsPerRow = _this$state6.itemsPerRow;
@@ -44743,12 +44763,7 @@ Cogs.define("react-list.js", (module, exports, require, __import) => {
         var offset = this.getSpaceBefore(from, cache);
         var x = axis === 'x' ? offset : 0;
         var y = axis === 'y' ? offset : 0;
-        var transform = useTranslate3d ? "translate3d(".concat(x, "px, ").concat(y, "px, 0)") : "translate(".concat(x, "px, ").concat(y, "px)");
-        var listStyle = {
-          msTransform: transform,
-          WebkitTransform: transform,
-          transform: transform
-        };
+        var listStyle = this.getListStyle(x, y);
         return /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
           style: style,
           ref: function ref(c) {
@@ -44790,7 +44805,8 @@ Cogs.define("react-list.js", (module, exports, require, __import) => {
     threshold: 100,
     type: 'simple',
     useStaticSize: false,
-    useTranslate3d: false
+    useTranslate3d: false,
+    usePosition: false
   });
 });
 });

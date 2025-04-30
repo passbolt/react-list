@@ -100,7 +100,8 @@ export default class ReactList extends Component {
     threshold: 100,
     type: 'simple',
     useStaticSize: false,
-    useTranslate3d: false
+    useTranslate3d: false,
+    usePosition: false
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -480,6 +481,26 @@ export default class ReactList extends Component {
     return [first, last];
   }
 
+  getListStyle(x, y) {
+    const { useTranslate3d, usePosition } = this.props;
+    if (usePosition) {
+      return {
+        position: 'relative',
+        top: y,
+        left: x
+      };
+    } else {
+      const transform = useTranslate3d
+        ? `translate3d(${x}px, ${y}px, 0)`
+        : `translate(${x}px, ${y}px)`;
+      return {
+        msTransform: transform,
+        WebkitTransform: transform,
+        transform: transform
+      };
+    }
+  }
+
   renderItems() {
     const { itemRenderer, itemsRenderer } = this.props;
     const { from, size } = this.state;
@@ -489,7 +510,7 @@ export default class ReactList extends Component {
   }
 
   render() {
-    const { axis, length, type, useTranslate3d } = this.props;
+    const { axis, length, type } = this.props;
     const { from, itemsPerRow } = this.state;
 
     const items = this.renderItems();
@@ -506,14 +527,8 @@ export default class ReactList extends Component {
     const offset = this.getSpaceBefore(from, cache);
     const x = axis === 'x' ? offset : 0;
     const y = axis === 'y' ? offset : 0;
-    const transform = useTranslate3d
-      ? `translate3d(${x}px, ${y}px, 0)`
-      : `translate(${x}px, ${y}px)`;
-    const listStyle = {
-      msTransform: transform,
-      WebkitTransform: transform,
-      transform
-    };
+    const listStyle = this.getListStyle(x, y);
+
     return (
       <div style={style} ref={c => (this.el = c)}>
         <div style={listStyle}>{items}</div>
